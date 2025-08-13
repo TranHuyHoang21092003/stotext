@@ -1,29 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speech ↔ Text App</title>
+    <title>Speech ↔ Text Demo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🎤 Speech ↔ Text App</h1>
+    <h1>🎤 Speech ↔ Text Demo</h1>
 
-        <div class="section">
-            <h2>🎙 Speech to Text</h2>
-            <div class="mic-container">
-                <button id="start-record-btn">Bắt đầu ghi âm</button>
-                <canvas id="visualizer"></canvas>
-            </div>
-            <textarea id="speech-result" placeholder="Kết quả giọng nói sẽ hiển thị ở đây..." rows="4"></textarea>
-        </div>
+    <div class="controls">
+        <button id="startBtn">Bắt đầu ghi âm</button>
+        <button id="stopBtn" disabled>Dừng</button>
+    </div>
 
-        <div class="section">
-            <h2>📝 Text to Speech</h2>
-            <textarea id="text-input" placeholder="Nhập văn bản để phát..." rows="4"></textarea>
-            <button id="speak-btn">Phát âm</button>
-        </div>
+    <div id="waveform"></div>
+
+    <textarea id="outputText" placeholder="Kết quả nhận diện sẽ hiển thị ở đây..."></textarea>
+
+    <div class="controls">
+        <button id="speakBtn">🔊 Đọc văn bản</button>
     </div>
 
     <script src="script.js"></script>
