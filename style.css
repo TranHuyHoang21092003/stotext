@@ -1,59 +1,74 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background-color: #f0f2f5;
     margin: 0;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    touch-action: manipulation;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
     background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     flex-grow: 1;
+    box-sizing: border-box;
 }
 
-h1, h2 {
+h1 {
+    font-size: 24px;
     text-align: center;
-    margin-bottom: 20px;
+    margin: 10px 0 20px;
+}
+
+h2 {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 15px;
 }
 
 .tts-section, .stt-section {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 textarea {
     width: 100%;
-    height: 100px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    height: 120px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     margin-bottom: 15px;
     font-size: 16px;
     box-sizing: border-box;
+    resize: vertical;
 }
 
 .button-group {
     display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
 button {
-    flex: 1;
-    padding: 12px;
+    padding: 15px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+button:active {
+    transform: scale(0.98);
 }
 
 button:disabled {
@@ -65,14 +80,19 @@ button:hover:not(:disabled) {
     background-color: #0056b3;
 }
 
+#startListeningBtn.recording {
+    background-color: #dc3545;
+}
+
 #recognizedText {
     margin-top: 15px;
     font-size: 16px;
     color: #333;
+    word-wrap: break-word;
 }
 
 #output {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 /* Responsive design for mobile */
@@ -82,29 +102,24 @@ button:hover:not(:disabled) {
     }
 
     .container {
-        padding: 15px;
+        padding: 12px;
     }
 
     h1 {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     h2 {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     textarea {
         font-size: 14px;
-        height: 80px;
+        height: 100px;
     }
 
     button {
         font-size: 14px;
-        padding: 10px;
-    }
-
-    .button-group {
-        flex-direction: column;
-        gap: 8px;
+        padding: 12px;
     }
 }
