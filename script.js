@@ -1,6 +1,15 @@
+// Định nghĩa SpeechRecognition với prefix cho các trình duyệt khác nhau
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 // Kiểm tra hỗ trợ Web Speech API
-if (!('speechSynthesis' in window) || !('SpeechRecognition' in window)) {
-    alert('Trình duyệt của bạn không hỗ trợ Web Speech API. Hãy thử Chrome để có trải nghiệm tốt nhất.');
+if (!('speechSynthesis' in window)) {
+    alert('Trình duyệt của bạn không hỗ trợ Text-to-Speech. Hãy thử Chrome, Safari, hoặc Edge.');
+}
+
+if (typeof SpeechRecognition === 'undefined') {
+    alert('Trình duyệt của bạn không hỗ trợ Speech-to-Text. Hãy thử Chrome, Safari (phiên bản mới), hoặc các trình duyệt dựa trên Chromium như Cốc Cốc.');
+    document.getElementById('startListeningBtn').disabled = true;
+    document.getElementById('stopListeningBtn').disabled = true;
 }
 
 // Text-to-Speech
@@ -18,33 +27,50 @@ speakBtn.addEventListener('click', () => {
     }
 });
 
-// Speech-to-Text
-const startListeningBtn = document.getElementById('startListeningBtn');
-const output = document.getElementById('output');
+// Speech-to-Text (nếu hỗ trợ)
+if (typeof SpeechRecognition !== 'undefined') {
+    const startListeningBtn = document.getElementById('startListeningBtn');
+    const stopListeningBtn = document.getElementById('stopListeningBtn');
+    const output = document.getElementById('output');
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
-recognition.lang = 'vi-VN'; // Ngôn ngữ tiếng Việt
-recognition.interimResults = false; // Chỉ lấy kết quả cuối cùng
-recognition.maxAlternatives = 1;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'vi-VN'; // Ngôn ngữ tiếng Việt (nếu hỗ trợ)
+    recognition.interimResults = false; // Chỉ lấy kết quả cuối cùng
+    recognition.maxAlternatives = 1;
 
-startListeningBtn.addEventListener('click', () => {
-    recognition.start();
-    startListeningBtn.textContent = 'Đang Nghe...';
-});
+    startListeningBtn.addEventListener('click', () => {
+        recognition.start();
+        startListeningBtn.disabled = true;
+        stopListeningBtn.disabled = false;
+        startListeningBtn.textContent = 'Đang Nghe...';
+    });
 
-recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    output.textContent = transcript;
-    startListeningBtn.textContent = 'Bắt Đầu Nghe';
-};
+    stopListeningBtn.addEventListener('click', () => {
+        recognition.stop();
+    });
 
-recognition.onerror = (event) => {
-    console.error('Lỗi nhận diện: ', event.error);
-    alert('Có lỗi xảy ra: ' + event.error);
-    startListeningBtn.textContent = 'Bắt Đầu Nghe';
-};
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        output.textContent = transcript;
+    };
 
-recognition.onend = () => {
-    startListeningBtn.textContent = 'Bắt Đầu Nghe';
-};
+    recognition.onerror = (event) => {
+        console.error('Lỗi nhận diện: ', event.error);
+        if (event.error === 'no-speech') {
+            alert('Không phát hiện giọng nói. Hãy thử lại!');
+        } else if (event.error === 'audio-capture') {
+            alert('Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập!');
+        } else {
+            alert('Có lỗi xảy ra: ' + event.error);
+        }
+        startListeningBtn.disabled = false;
+        stopListeningBtn.disabled = true;
+        startListeningBtn.textContent = 'Bắt Đầu Nghe';
+    };
+
+    recognition.onend = () => {
+        startListeningBtn.disabled = false;
+        stopListeningBtn.disabled = true;
+        startListeningBtn.textContent = 'Bắt Đầu Nghe';
+    };
+}
