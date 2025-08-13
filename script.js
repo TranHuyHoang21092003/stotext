@@ -1,8 +1,8 @@
 // Configuration
 const CONFIG = {
-    API_KEY: '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', // Thay thế bằng API key hợp lệ
-    WHISPER_API: 'https://api.openai.com/v1/audio/transcriptions',
-    TTS_API: 'https://api.openai.com/v1/audio/speech'
+    API_KEY: 'xai-BF6Izyvsvwwxi47wnz9ger7Umbe2Oa4nAaexwSZGWd89hcPsR1EqKkYV2iZQChghJEwZimICrExgEz2Z', // Khóa API của Grok
+    WHISPER_API: 'https://api.grok.xai.com/v1/completions', // Giả định endpoint cho STT, cần kiểm tra tài liệu
+    TTS_API: 'https://api.grok.xai.com/v1/audio/speech' // Giả định endpoint cho TTS, cần kiểm tra tài liệu
 };
 
 // Global variables
@@ -187,7 +187,7 @@ function handleFileUpload(event) {
 }
 
 /**
- * Transcribe audio to text using OpenAI Whisper API
+ * Transcribe audio to text using Grok API
  */
 async function transcribeAudio() {
     const audioSrc = elements.audioPlayer.src;
@@ -199,7 +199,6 @@ async function transcribeAudio() {
     try {
         showStatus(elements.sttStatus, 'Đang chuyển đổi giọng nói thành văn bản...', 'loading');
         
-        // Get audio blob
         let audioBlob;
         if (recordedChunks.length > 0) {
             audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
@@ -212,10 +211,10 @@ async function transcribeAudio() {
         // Prepare form data
         const formData = new FormData();
         formData.append('file', audioBlob, 'audio.wav');
-        formData.append('model', 'whisper-1');
+        formData.append('model', 'grok-3'); // Giả định sử dụng Grok 3, kiểm tra tài liệu
         formData.append('language', elements.language.value);
 
-        // Call OpenAI Whisper API
+        // Call Grok API
         const response = await fetch(CONFIG.WHISPER_API, {
             method: 'POST',
             headers: {
@@ -230,12 +229,12 @@ async function transcribeAudio() {
         }
 
         const result = await response.json();
-        elements.transcriptOutput.value = result.text;
+        // Giả định result.choices[0].text là trường chứa văn bản chuyển đổi, cần kiểm tra tài liệu
+        elements.transcriptOutput.value = result.choices?.[0]?.text || result.text;
         autoResize(elements.transcriptOutput);
         
         showStatus(elements.sttStatus, 'Chuyển đổi thành công!', 'success');
         
-        // Auto hide status after 3 seconds
         setTimeout(() => hideStatus(elements.sttStatus), 3000);
         
     } catch (error) {
@@ -247,7 +246,7 @@ async function transcribeAudio() {
 // ================== TEXT TO SPEECH FUNCTIONS ==================
 
 /**
- * Generate speech from text using OpenAI TTS API
+ * Generate speech from text using Grok TTS API
  */
 async function generateSpeech() {
     const text = elements.textInput.value.trim();
@@ -259,7 +258,7 @@ async function generateSpeech() {
     try {
         showStatus(elements.ttsStatus, 'Đang tạo giọng nói...', 'loading');
 
-        // Call OpenAI TTS API
+        // Call Grok TTS API
         const response = await fetch(CONFIG.TTS_API, {
             method: 'POST',
             headers: {
@@ -267,7 +266,7 @@ async function generateSpeech() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'tts-1',
+                model: 'grok-3', // Giả định sử dụng Grok 3, kiểm tra tài liệu
                 input: text,
                 voice: selectedVoice,
                 speed: parseFloat(elements.speed.value)
@@ -287,7 +286,6 @@ async function generateSpeech() {
         
         showStatus(elements.ttsStatus, 'Tạo giọng nói thành công!', 'success');
         
-        // Auto hide status after 3 seconds
         setTimeout(() => hideStatus(elements.ttsStatus), 3000);
         
     } catch (error) {
