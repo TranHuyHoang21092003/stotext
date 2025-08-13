@@ -2,33 +2,63 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     padding: 20px;
-    background: #f2f2f2;
+    background: #f4f4f4;
 }
 
-.mic-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+h1 {
+    color: #333;
 }
 
-.mic-icon {
-    width: 60px;
-    height: 60px;
-    background: red;
-    border-radius: 50%;
-    animation: none;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.6; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-#result {
-    padding: 15px;
+.section {
+    margin: 20px auto;
+    padding: 20px;
     background: white;
-    border-radius: 8px;
-    min-height: 50px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+button {
+    padding: 10px 20px;
     margin-top: 10px;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+}
+
+.visualizer {
+    width: 200px;
+    height: 50px;
+    background: #ddd;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.bar {
+    width: 5px;
+    height: 20px;
+    background: #007bff;
+    margin: 0 2px;
+    animation: bounce 0.4s infinite ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(2); }
 }
