@@ -1,44 +1,56 @@
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-const resultDiv = document.getElementById("result");
+const API_KEY = "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";
 
 let mediaRecorder;
 let audioChunks = [];
+const micIcon = document.getElementById("micIcon");
+const resultDiv = document.getElementById("result");
 
-startBtn.onclick = async () => {
-    audioChunks = [];
+document.getElementById("startBtn").addEventListener("click", async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
 
-    mediaRecorder.ondataavailable = event => {
-        audioChunks.push(event.data);
+    mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) {
+            audioChunks.push(e.data);
+        }
+    };
+
+    mediaRecorder.onstart = () => {
+        micIcon.style.animation = "pulse 0.8s infinite";
     };
 
     mediaRecorder.onstop = async () => {
+        micIcon.style.animation = "none";
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const formData = new FormData();
-        formData.append("file", audioBlob, "audio.webm");
-        formData.append("model", "gpt-4o-mini-transcribe"); // Hỗ trợ nhiều ngôn ngữ
-
-        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-            method: "POST",
-            headers: {
-                Authorization: "Bearer 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"
-            },
-            body: formData
-        });
-
-        const data = await response.json();
-        resultDiv.innerText = data.text || "Không nhận diện được!";
+        await transcribeAudio(audioBlob);
     };
 
     mediaRecorder.start();
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-};
+    document.getElementById("startBtn").disabled = true;
+    document.getElementById("stopBtn").disabled = false;
+});
 
-stopBtn.onclick = () => {
+document.getElementById("stopBtn").addEventListener("click", () => {
     mediaRecorder.stop();
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-};
+    document.getElementById("startBtn").disabled = false;
+    document.getElementById("stopBtn").disabled = true;
+});
+
+async function transcribeAudio(audioBlob) {
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.webm");
+    formData.append("model", "gpt-4o-mini-transcribe"); // hỗ trợ nhiều ngôn ngữ
+    formData.append("response_format", "text");
+
+    const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${API_KEY}`
+        },
+        body: formData
+    });
+
+    const text = await response.text();
+    resultDiv.textContent = text;
+}
