@@ -3,136 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice ⇄ Text Converter</title>
+    <title>Chuyển Đổi Văn Bản - Giọng Nói</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🎙️ Voice ⇄ Text Converter</h1>
-            <p>Chuyển đổi giọng nói thành văn bản và văn bản thành giọng nói với Hoàng</p>
-        </div>
-
-        <div class="main-content">
-            <!-- Speech to Text Section -->
-            <div class="section">
-                <h2 class="section-title">
-                    <span class="icon">🎤</span>
-                    Giọng nói → Văn bản
-                </h2>
-
-                <div class="input-group">
-                    <label for="language">Chọn ngôn ngữ:</label>
-                    <select id="language">
-                        <option value="vi">Tiếng Việt</option>
-                        <option value="en">English</option>
-                        <option value="zh">中文</option>
-                        <option value="ja">日本語</option>
-                        <option value="ko">한국어</option>
-                        <option value="fr">Français</option>
-                        <option value="de">Deutsch</option>
-                        <option value="es">Español</option>
-                        <option value="it">Italiano</option>
-                        <option value="ru">Русский</option>
-                    </select>
-                </div>
-
-                <div class="recording-indicator" id="recordingIndicator">
-                    🔴 Đang ghi âm...
-                </div>
-
-                <button class="btn" id="recordBtn">
-                    <span>🎙️</span>
-                    Bắt đầu ghi âm
-                </button>
-
-                <button class="btn btn-secondary" id="stopBtn" disabled>
-                    <span>⏹️</span>
-                    Dừng ghi âm
-                </button>
-
-                <div class="audio-controls" id="audioControls">
-                    <audio controls id="audioPlayer"></audio>
-                    <button class="btn" id="transcribeBtn">
-                        <span>📝</span>
-                        Chuyển thành văn bản
-                    </button>
-                </div>
-
-                <div class="input-group">
-                    <label>Hoặc tải file âm thanh:</label>
-                    <div class="file-upload">
-                        <input type="file" id="audioFile" accept="audio/*">
-                        <label for="audioFile" class="file-upload-label">
-                            📁 Chọn file âm thanh (MP3, WAV, M4A...)
-                        </label>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="transcriptOutput">Kết quả:</label>
-                    <textarea id="transcriptOutput" placeholder="Văn bản sẽ hiển thị ở đây..." readonly></textarea>
-                </div>
-
-                <div class="status" id="sttStatus"></div>
-            </div>
-
-            <!-- Text to Speech Section -->
-            <div class="section">
-                <h2 class="section-title">
-                    <span class="icon">🔊</span>
-                    Văn bản → Giọng nói
-                </h2>
-
-                <div class="input-group">
-                    <label for="textInput">Nhập văn bản:</label>
-                    <textarea id="textInput" placeholder="Nhập văn bản cần chuyển thành giọng nói..."></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label>Chọn giọng đọc:</label>
-                    <div class="voice-selection">
-                        <div class="voice-option selected" data-voice="alloy">Alloy</div>
-                        <div class="voice-option" data-voice="echo">Echo</div>
-                        <div class="voice-option" data-voice="fable">Fable</div>
-                        <div class="voice-option" data-voice="onyx">Onyx</div>
-                        <div class="voice-option" data-voice="nova">Nova</div>
-                        <div class="voice-option" data-voice="shimmer">Shimmer</div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="speed">Tốc độ đọc:</label>
-                    <select id="speed">
-                        <option value="0.75">Chậm (0.75x)</option>
-                        <option value="1.0" selected>Bình thường (1.0x)</option>
-                        <option value="1.25">Nhanh (1.25x)</option>
-                        <option value="1.5">Rất nhanh (1.5x)</option>
-                    </select>
-                </div>
-
-                <button class="btn" id="generateSpeechBtn">
-                    <span>🎵</span>
-                    Tạo giọng nói
-                </button>
-
-                <div class="audio-controls" id="generatedAudioControls">
-                    <audio controls id="generatedAudioPlayer"></audio>
-                    <button class="btn btn-secondary" id="downloadAudioBtn">
-                        <span>💾</span>
-                        Tải xuống âm thanh
-                    </button>
-                </div>
-
-                <div class="status" id="ttsStatus"></div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>Trần Huy Hoàng| Made with ❤️</p>
-        </div>
+        <h1>Ứng Dụng Chuyển Đổi Văn Bản và Giọng Nói</h1>
+        
+        <section class="tts-section">
+            <h2>Chuyển Văn Bản Thành Giọng Nói</h2>
+            <textarea id="textToSpeak" placeholder="Nhập văn bản cần đọc..."></textarea>
+            <button id="speakBtn">Đọc Văn Bản</button>
+        </section>
+        
+        <section class="stt-section">
+            <h2>Chuyển Giọng Nói Thành Văn Bản</h2>
+            <button id="startListeningBtn">Bắt Đầu Nghe</button>
+            <p id="recognizedText">Văn bản nhận diện: <span id="output"></span></p>
+        </section>
     </div>
-
-    <script src="scr.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
