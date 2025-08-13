@@ -1,88 +1,70 @@
-const OPENAI_API_KEY = "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"; // 🔹 Thay bằng API key thật
+const API_KEY = "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"; // ⚠️ Đặt API key của bạn ở đây
 
-let audioContext, analyser, dataArray, source;
-let isRecording = false;
+let mediaRecorder;
+let audioChunks = [];
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const speakBtn = document.getElementById("speakBtn");
+const outputText = document.getElementById("outputText");
+const waveform = document.getElementById("waveform");
 
-// 🎙 Bắt đầu ghi âm + gửi lên Whisper API
-document.getElementById("start-record-btn").addEventListener("click", async () => {
-    if (isRecording) {
-        stopRecording();
-        return;
+function createWaveform() {
+    waveform.innerHTML = "";
+    for (let i = 0; i < 20; i++) {
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.animationDelay = `${i * 0.05}s`;
+        waveform.appendChild(bar);
     }
+}
 
+function clearWaveform() {
+    waveform.innerHTML = "";
+}
+
+startBtn.onclick = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioContext = new AudioContext();
-    source = audioContext.createMediaStreamSource(stream);
-    analyser = audioContext.createAnalyser();
-    source.connect(analyser);
-    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
 
-    visualize();
+    mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+    };
 
-    const mediaRecorder = new MediaRecorder(stream);
-    let chunks = [];
+    mediaRecorder.onstart = createWaveform;
 
-    mediaRecorder.ondataavailable = e => chunks.push(e.data);
     mediaRecorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' });
+        clearWaveform();
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         const formData = new FormData();
-        formData.append("file", blob, "audio.webm");
+        formData.append("file", audioBlob, "audio.webm");
         formData.append("model", "whisper-1");
 
         const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
             method: "POST",
-            headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+            headers: { Authorization: `Bearer ${API_KEY}` },
             body: formData
         });
 
         const data = await res.json();
-        document.getElementById("speech-result").value = data.text || "Không nhận diện được.";
+        outputText.value = data.text || "❌ Không nhận diện được!";
     };
 
     mediaRecorder.start();
-    isRecording = true;
-    document.getElementById("start-record-btn").innerText = "⏹ Dừng ghi âm";
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+};
 
-    // Dừng sau 15s
-    setTimeout(() => {
-        if (isRecording) stopRecording(mediaRecorder, stream);
-    }, 15000);
-});
-
-function stopRecording(mediaRecorder, stream) {
+stopBtn.onclick = () => {
     mediaRecorder.stop();
-    stream.getTracks().forEach(track => track.stop());
-    isRecording = false;
-    document.getElementById("start-record-btn").innerText = "Bắt đầu ghi âm";
-}
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+};
 
-// 🎵 Hiệu ứng dao động
-function visualize() {
-    const canvas = document.getElementById("visualizer");
-    const ctx = canvas.getContext("2d");
-
-    function draw() {
-        requestAnimationFrame(draw);
-        analyser.getByteFrequencyData(dataArray);
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        const barWidth = (canvas.width / dataArray.length) * 2.5;
-        let x = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-            const barHeight = dataArray[i] / 2;
-            ctx.fillStyle = `rgb(${barHeight + 100},50,50)`;
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-            x += barWidth + 1;
-        }
-    }
-    draw();
-}
-
-// 🗣 Text to Speech
-document.getElementById("speak-btn").addEventListener("click", () => {
-    const text = document.getElementById("text-input").value;
+speakBtn.onclick = () => {
+    const text = outputText.value;
+    if (!text) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "auto";
+    utterance.lang = "vi-VN"; // Có thể đổi sang ngôn ngữ khác
     speechSynthesis.speak(utterance);
-});
+};
