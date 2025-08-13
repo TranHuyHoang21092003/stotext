@@ -1,6 +1,6 @@
 // Configuration
 const CONFIG = {
-    API_KEY: 'xai-BF6Izyvsvwwxi47wnz9ger7Umbe2Oa4nAaexwSZGWd89hcPsR1EqKkYV2iZQChghJEwZimICrExgEz2Z', // Khóa API của Grok
+    API_KEY: 'xai-BF6Izyvsvwwxi47wnz9ger7Umbe2Oa4nAaexwSZGWd89hcPsR1EqKkYV2iZQChghJEwZimICrExgEz2Z',
     WHISPER_API: 'https://api.grok.xai.com/v1/completions', // Giả định endpoint cho STT, cần kiểm tra tài liệu
     TTS_API: 'https://api.grok.xai.com/v1/audio/speech' // Giả định endpoint cho TTS, cần kiểm tra tài liệu
 };
