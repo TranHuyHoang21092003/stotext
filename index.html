@@ -2,143 +2,20 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Speech ↔ Text AI</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        color: white;
-        margin: 0;
-        padding: 20px;
-    }
-    h1 { margin-bottom: 10px; }
-    button {
-        background: #ff9800;
-        border: none;
-        padding: 12px 20px;
-        margin: 10px;
-        border-radius: 8px;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    button:hover { background: #e68900; }
-    textarea {
-        width: 90%;
-        height: 120px;
-        margin: 10px auto;
-        display: block;
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        resize: none;
-        font-size: 16px;
-    }
-    .wave {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        height: 40px;
-        margin-top: 10px;
-    }
-    .bar {
-        width: 5px;
-        height: 10px;
-        background: white;
-        margin: 0 2px;
-        animation: sound 0.5s infinite;
-    }
-    @keyframes sound {
-        0% { height: 10px; }
-        50% { height: 40px; }
-        100% { height: 10px; }
-    }
-</style>
+<title>Voice AI App</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<h1>🎤 Voice AI Assistant</h1>
 
-<h1>🎤 Speech ↔ Text AI</h1>
-<p>Dùng OpenAI Whisper để nhận diện giọng nói, và TTS để phát âm văn bản</p>
-
-<button id="startRecord">🎙 Bắt đầu ghi âm</button>
-<button id="stopRecord" disabled>⏹ Dừng ghi âm</button>
-<div class="wave" id="waveform" style="display:none;">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
+<div class="container">
+  <button id="recordBtn">🎙 Bắt đầu ghi âm</button>
+  <p id="transcript">Văn bản sẽ hiển thị ở đây...</p>
+  
+  <textarea id="ttsText" placeholder="Nhập văn bản để đọc..."></textarea>
+  <button id="ttsBtn">🔊 Chuyển thành giọng nói</button>
 </div>
 
-<textarea id="textOutput" placeholder="Kết quả nhận diện sẽ hiển thị ở đây..."></textarea>
-<button id="speakText">🔊 Đọc văn bản</button>
-
-<script>
-const apiKey = "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"; // 🔹 Thay bằng API Key của bạn
-let mediaRecorder, audioChunks = [];
-
-// 🎤 Ghi âm và gửi tới Whisper API
-document.getElementById("startRecord").onclick = async () => {
-    audioChunks = [];
-    document.getElementById("waveform").style.display = "flex";
-    document.getElementById("startRecord").disabled = true;
-    document.getElementById("stopRecord").disabled = false;
-
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.start();
-
-    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-    mediaRecorder.onstop = async () => {
-        document.getElementById("waveform").style.display = "none";
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const formData = new FormData();
-        formData.append("file", audioBlob, "recording.webm");
-        formData.append("model", "whisper-1");
-
-        const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${apiKey}` },
-            body: formData
-        });
-        const data = await res.json();
-        document.getElementById("textOutput").value = data.text || "Không nhận diện được.";
-    };
-};
-
-// ⏹ Dừng ghi âm
-document.getElementById("stopRecord").onclick = () => {
-    document.getElementById("startRecord").disabled = false;
-    document.getElementById("stopRecord").disabled = true;
-    mediaRecorder.stop();
-};
-
-// 🔊 Text to Speech (TTS)
-document.getElementById("speakText").onclick = async () => {
-    const text = document.getElementById("textOutput").value;
-    if (!text) return alert("Nhập văn bản để đọc!");
-    const res = await fetch("https://api.openai.com/v1/audio/speech", {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            model: "gpt-4o-mini-tts",
-            voice: "alloy",
-            input: text
-        })
-    });
-
-    const arrayBuffer = await res.arrayBuffer();
-    const audioBlob = new Blob([arrayBuffer], { type: "audio/mpeg" });
-    const audioUrl = URL.createObjectURL(audioBlob);
-    new Audio(audioUrl).play();
-};
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
