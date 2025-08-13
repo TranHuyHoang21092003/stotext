@@ -1,6 +1,6 @@
 // Configuration
 const CONFIG = {
-    API_KEY: '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', // Thay thế bằng API key hợp lệ
+    API_KEY: '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', // Thay thế bằng API key hợp lệ
     WHISPER_API: 'https://api.openai.com/v1/audio/transcriptions',
     TTS_API: 'https://api.openai.com/v1/audio/speech'
 };
