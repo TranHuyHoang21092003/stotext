@@ -2,17 +2,22 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Speech to Text Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text - All Languages</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>🎤 Speech to Text - OpenAI</h1>
-
+    <h1>🎤 Speech to Text Demo</h1>
+    
+    <div class="mic-container">
+        <div class="mic-icon" id="micIcon"></div>
+    </div>
+    
     <button id="startBtn">Bắt đầu ghi âm</button>
     <button id="stopBtn" disabled>Dừng ghi âm</button>
 
-    <p>Kết quả:</p>
-    <textarea id="result" rows="8" placeholder="Nội dung sẽ hiển thị ở đây..."></textarea>
+    <p><strong>Kết quả:</strong></p>
+    <div id="result"></div>
 
     <script src="script.js"></script>
 </body>
